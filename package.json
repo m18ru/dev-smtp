@@ -1,0 +1,38 @@
+{
+  "name": "dev-smtp",
+  "version": "0.1.0",
+  "description": "A development SMTP server with storing mails as files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m18ru/dev-smtp.git"
+  },
+  "keywords": [
+    "development",
+    "smtp",
+    "dev",
+    "mail",
+    "server"
+  ],
+  "author": "Andrey Avol Volynkin <code@m18.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/m18ru/dev-smtp/issues"
+  },
+  "homepage": "https://github.com/m18ru/dev-smtp#readme",
+  "devDependencies": {
+    "@types/mailparser": "^2.0.0",
+    "@types/node": "^8.0.7",
+    "@types/smtp-server": "^1.15.0",
+    "tslint": "^5.4.3",
+    "tslint-config-m18": "^1.4.0",
+    "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "mailparser": "^2.0.5",
+    "smtp-server": "^3.0.1"
+  }
+}
