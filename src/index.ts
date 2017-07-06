@@ -17,7 +17,8 @@ function main( mailRootDir: string, port: number = 25 ): SMTPServer
 		{
 			disabledCommands: ['AUTH'],
 			disableReverseLookup: true,
-			onData: onServerData.bind( null, mailRootDir ),
+			onData: ( stream, session, callback ) =>
+				onServerData( mailRootDir, stream, session, callback ),
 		},
 	);
 	
