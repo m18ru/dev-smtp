@@ -15,7 +15,7 @@ function main( mailRootDir: string, port: number = 25 ): SMTPServer
 {
 	const server = new SMTPServer(
 		{
-			disabledCommands: ['AUTH'],
+			disabledCommands: ['AUTH', 'STARTTLS'],
 			disableReverseLookup: true,
 			onData: ( stream, session, callback ) =>
 				onServerData( mailRootDir, stream, session, callback ),
