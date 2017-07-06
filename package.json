@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/mailparser": "^2.0.0",
     "@types/node": "^8.0.7",
+    "@types/shortid": "0.0.29",
     "@types/smtp-server": "^1.15.0",
     "tslint": "^5.4.3",
     "tslint-config-m18": "^1.4.0",
@@ -33,6 +34,7 @@
   },
   "dependencies": {
     "mailparser": "^2.0.5",
+    "shortid": "^2.2.8",
     "smtp-server": "^3.0.1"
   }
 }

@@ -8,9 +8,8 @@ import getMailDirName from './utils/getMailDirName';
  * Parse and extract contents from email.
  * 
  * @param mailDir Path to directory to store emails.
- * @param rawFile Path to raw email file.
  */
-function parseMail( mailDir: string, rawFile: string ): MailParser
+function parseMail( mailDir: string ): MailParser
 {
 	const mailparser = new MailParser(
 		{
@@ -23,7 +22,7 @@ function parseMail( mailDir: string, rawFile: string ): MailParser
 	);
 	mailparser.on(
 		'end',
-		( mail ) => onParserEnd( mailDir, rawFile, mail ),
+		( mail ) => onParserEnd( mailDir, mail ),
 	);
 	
 	return mailparser;
@@ -50,12 +49,11 @@ function onParserAttachment( mailDir: string, attachment: Attachment ): void
  * Extract email contents and move to specific directory.
  * 
  * @param mailDir Path to directory to store emails.
- * @param rawFile Path to raw email file.
  * @param mail Mail data.
  */
-function onParserEnd( mailDir: string, rawFile: string, mail: ParsedMail ): void
+function onParserEnd( mailDir: string, mail: ParsedMail ): void
 {
-	const metaParts = [ mail.subject, '' ];
+	const metaParts = [mail.subject, ''];
 	
 	appendAddressesAsHeaderString( mail.from, 'From: ', metaParts );
 	appendAddressesAsHeaderString( mail.to, 'To: ', metaParts );
@@ -71,9 +69,9 @@ function onParserEnd( mailDir: string, rawFile: string, mail: ParsedMail ): void
 		metaParts.push( `${key}: ${mail.headers[key]}` );
 	}
 	
-	const currentMailDir = Path.resolve( mailDir, getMailDirName( mail ) );
+	const currentMailDir = Path.resolve( mailDir, '..', getMailDirName( mail ) );
 	
-	const onDirCreated = ( error: Error ): void =>
+	const onDirRenamed = ( error: Error ): void =>
 	{
 		if ( error )
 		{
@@ -81,12 +79,6 @@ function onParserEnd( mailDir: string, rawFile: string, mail: ParsedMail ): void
 			
 			return;
 		}
-		
-		Fs.rename(
-			rawFile,
-			Path.resolve( currentMailDir, 'raw.eml' ),
-			errorCallback,
-		);
 		
 		Fs.writeFile(
 			Path.resolve( currentMailDir, 'meta.txt' ),
@@ -113,7 +105,7 @@ function onParserEnd( mailDir: string, rawFile: string, mail: ParsedMail ): void
 		}
 	};
 	
-	Fs.mkdir( currentMailDir, onDirCreated );
+	Fs.rename( mailDir, currentMailDir, onDirRenamed );
 }
 
 /**
