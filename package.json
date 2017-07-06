@@ -3,8 +3,19 @@
   "version": "0.1.0",
   "description": "A development SMTP server with storing mails as files",
   "main": "index.js",
+  "module": "./es2015/index.js",
+  "types": "./es2015/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint",
+    "lint:scripts-project": "tslint -c tslint-type-check.json -p tsconfig.json --type-check",
+    "lint:scripts-other": "tslint \"{*.js,src/*.d.ts,test/*.{ts,tsx}}\"",
+    "lint": "npm run lint:scripts-project && npm run lint:scripts-other",
+    "clean": "rimraf es2015 index.js",
+    "build": "npm run build:es2015 && npm run build:cjs",
+    "build:es2015": "tsc",
+    "build:cjs": "rollup -c",
+    "prepublishOnly": "npm run test",
+    "prepare": "npm run clean && npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,6 +39,9 @@
     "@types/node": "^8.0.7",
     "@types/shortid": "0.0.29",
     "@types/smtp-server": "^1.15.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.43.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "tslint": "^5.4.3",
     "tslint-config-m18": "^1.4.0",
     "typescript": "^2.4.1"

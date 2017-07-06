@@ -1,0 +1,10 @@
+.gitignore
+node_modules/
+*.log
+.editorconfig
+.travis.yml
+rollup.config.js
+tsconfig.json
+tslint.json
+tslint-type-check.json
+/src/
