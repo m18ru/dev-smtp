@@ -5,7 +5,7 @@
  */
 function prepareFileName( name: string ): string
 {
-	return name.replace( /[<>:;"'`\/\\|?*.]+/g, '_' ).substr( 100 );
+	return name.replace( /[<>:;"'`\/\\|?*.]+/g, '_' ).substr( 0, 100 );
 }
 
 /**

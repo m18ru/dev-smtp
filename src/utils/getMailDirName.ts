@@ -44,7 +44,7 @@ function getMailDirName( mail: ParsedMail ): string
 	
 	lastDateString = dateString;
 	
-	return `${dateString}${counter}-${prepareFileName( mail.subject )}`;
+	return `${dateString}${counter}-${prepareFileName( mail.subject || '' )}`;
 }
 
 /**

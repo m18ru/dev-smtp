@@ -1,48 +1,33 @@
 import * as Fs from 'fs';
-import {Attachment, EmailAddress, MailParser, ParsedMail} from 'mailparser';
+import {ParsedMail, simpleParser} from 'mailparser';
 import * as Path from 'path';
 import errorCallback from './utils/errorCallback';
 import getMailDirName from './utils/getMailDirName';
+import headerToString from './utils/headerToString';
+import upperFirst from './utils/upperFirst';
 
 /**
  * Parse and extract contents from email.
  * 
+ * @param stream Raw mail stream.
  * @param mailDir Path to directory to store emails.
  */
-function parseMail( mailDir: string ): MailParser
+function parseMail( stream: NodeJS.ReadableStream, mailDir: string ): void
 {
-	const mailparser = new MailParser(
+	simpleParser(
+		stream,
+		( error, mail ) =>
 		{
-			streamAttachments: true,
+			if ( error )
+			{
+				console.error( error );
+				
+				return;
+			}
+			
+			onParserEnd( mailDir, mail );
 		},
 	);
-	mailparser.on(
-		'attachment',
-		( attachment ) => onParserAttachment( mailDir, attachment ),
-	);
-	mailparser.on(
-		'end',
-		( mail ) => onParserEnd( mailDir, mail ),
-	);
-	
-	return mailparser;
-}
-
-/**
- * Extract attachments.
- * 
- * @param mailDir Path to directory to store emails.
- * @param attachment Attachment data.
- */
-function onParserAttachment( mailDir: string, attachment: Attachment ): void
-{
-	const file = Path.resolve(
-		mailDir,
-		'attachment_' + attachment.generatedFileName,
-	);
-	const output = Fs.createWriteStream( file );
-	
-	attachment.stream.pipe( output );
 }
 
 /**
@@ -53,21 +38,14 @@ function onParserAttachment( mailDir: string, attachment: Attachment ): void
  */
 function onParserEnd( mailDir: string, mail: ParsedMail ): void
 {
-	const metaParts = [mail.subject, ''];
+	const headersParts: string[] = [];
 	
-	appendAddressesAsHeaderString( mail.from, 'From: ', metaParts );
-	appendAddressesAsHeaderString( mail.to, 'To: ', metaParts );
-	appendAddressesAsHeaderString( mail.cc, 'Cc: ', metaParts );
-	appendAddressesAsHeaderString( mail.bcc, 'Bcc: ', metaParts );
-	
-	metaParts.push( '' );
-	
-	const headerKeys = Object.keys( mail.headers );
-	
-	for ( const key of headerKeys )
-	{
-		metaParts.push( `${key}: ${mail.headers[key]}` );
-	}
+	mail.headers.forEach(
+		( value, key ) =>
+			headersParts.push(
+				`${upperFirst( key )}: ${headerToString( value )}`,
+			),
+	);
 	
 	const currentMailDir = Path.resolve( mailDir, '..', getMailDirName( mail ) );
 	
@@ -81,8 +59,8 @@ function onParserEnd( mailDir: string, mail: ParsedMail ): void
 		}
 		
 		Fs.writeFile(
-			Path.resolve( currentMailDir, 'meta.txt' ),
-			metaParts.join( '\n' ),
+			Path.resolve( currentMailDir, 'headers.txt' ),
+			headersParts.join( '\n' ),
 			errorCallback,
 		);
 		
@@ -103,35 +81,24 @@ function onParserEnd( mailDir: string, mail: ParsedMail ): void
 				errorCallback,
 			);
 		}
+		
+		if ( mail.attachments )
+		{
+			for ( const attachment of mail.attachments )
+			{
+				Fs.writeFile(
+					Path.resolve(
+						currentMailDir,
+						'attachment_' + attachment.filename,
+					),
+					attachment.content,
+					errorCallback,
+				);
+			}
+		}
 	};
 	
 	Fs.rename( mailDir, currentMailDir, onDirRenamed );
-}
-
-/**
- * Append list of email addresses to list of headers.
- * 
- * @param list List of email addresses.
- * @param label Header label.
- * @param target Array to append.
- */
-function appendAddressesAsHeaderString(
-	list: EmailAddress[] | undefined,
-	label: string,
-	target: string[],
-): void
-{
-	if ( list && ( list.length !== 0 ) )
-	{
-		const addresses = [];
-		
-		for ( const item of list )
-		{
-			addresses.push( `${item.name} <${item.address}>` );
-		}
-		
-		target.push( label + addresses.join( ', ' ) );
-	}
 }
 
 /**

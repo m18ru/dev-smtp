@@ -49,7 +49,7 @@ function onServerData(
 {
 	const mailDir = Path.resolve( mailRootDir, generate() );
 	
-	const onDirCreated = ( error: Error ): void =>
+	const onDirCreated = ( error?: Error ): void =>
 	{
 		if ( error )
 		{
@@ -59,12 +59,24 @@ function onServerData(
 		}
 		
 		const rawFile = Path.resolve( mailDir, 'raw.eml' );
-		const rawOutput = Fs.createWriteStream( rawFile );
-		const mailparser = parseMail( mailDir );
+		const fileStream = Fs.createWriteStream( rawFile );
 		
-		stream.pipe( rawOutput );
-		stream.pipe( mailparser );
-		stream.on( 'end', callback );
+		const onStreamEnd = ( streamError?: Error ): void =>
+		{
+			if ( streamError )
+			{
+				fileStream.end();
+				console.error( streamError );
+				
+				return;
+			}
+			
+			callback( streamError );
+		};
+		
+		parseMail( stream, mailDir );
+		stream.pipe( fileStream );
+		stream.on( 'end', onStreamEnd );
 	};
 	
 	Fs.mkdir( mailDir, onDirCreated );
