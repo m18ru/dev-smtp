@@ -16,10 +16,10 @@ const argv = require( 'minimist' )(
 	}
 );
 
+const packageData = require( './package.json' );
+
 if ( argv.version )
 {
-	const packageData = require( './package.json' );
-	
 	console.log( `${packageData.name} ${packageData.version}` );
 	process.exit();
 }
@@ -27,6 +27,8 @@ if ( argv.version )
 if ( argv._.length !== 1 )
 {
 	console.log( `
+${packageData.name} ${packageData.version}
+
 Usage: dev-smtp [options] <path>
 	
 	<path> - Path to directory to store emails (should exist).
