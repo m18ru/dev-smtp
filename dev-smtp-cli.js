@@ -63,3 +63,4 @@ const devSmtp = require( './index' );
 devSmtp( path, argv.port );
 
 console.log( 'Starting development SMTP server on port %s', argv.port );
+console.log( 'Mail directory is "%s"', path );
