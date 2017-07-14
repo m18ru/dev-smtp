@@ -52,7 +52,7 @@ year-month-date-hours-minutes-seconds-milliseconds-counter-subject
 
 Where:
 
-- Date parts is a date of email, or current date if email has no date.
+- Date parts is a date of email, or current date if email has no date (in UTC timezone).
 - Counter is increased when server get two emails with the same date in a row.
 - Subject is a `subject` header of email.
 
