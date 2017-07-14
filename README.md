@@ -69,7 +69,9 @@ Directory contains this files:
 To use in JS/TS code:
 
 ```js
-import devSmtp from 'dev-smtp';
+import * as devSmtp from 'dev-smtp';
+// Or:
+// const devSmtp = require( 'dev-smtp' );
 
 devSmtp( '/tmp', 2525 );
 ```
@@ -87,6 +89,10 @@ function main( mailRootDir: string, port: number = 25 ): SMTPServer;
 ```
 
 Where `SMTPServer` is a server object from `smtp-server` package.
+
+## Change Log
+
+[View changelog](CHANGELOG.md).
 
 ## License
 
