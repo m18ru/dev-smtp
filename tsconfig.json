@@ -17,7 +17,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"removeComments": true,
 		"declaration": true,
-		"sourceMap": true,
+		"sourceMap": false,
 		"importHelpers": true,
 		"outDir": "./es2015",
 		"rootDir": "./src/",
