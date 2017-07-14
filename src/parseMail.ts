@@ -38,6 +38,14 @@ function parseMail( stream: NodeJS.ReadableStream, mailDir: string ): void
  */
 function onParserEnd( mailDir: string, mail: ParsedMail ): void
 {
+	// tslint:disable-next-line:no-console
+	console.log(
+		'Mail recieved: ',
+		mail.date,
+		mail.from.text,
+		mail.subject,
+	);
+	
 	const headersParts: string[] = [];
 	
 	mail.headers.forEach(
