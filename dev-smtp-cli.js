@@ -20,7 +20,7 @@ const packageData = require( './package.json' );
 
 if ( argv.version )
 {
-	console.log( `${packageData.name} ${packageData.version}` );
+	console.log( packageData.version );
 	process.exit();
 }
 
