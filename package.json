@@ -4,7 +4,7 @@
   "description": "A development SMTP server with storing mails as files",
   "main": "index.js",
   "module": "./es2015/index.js",
-  "types": "./es2015/index.d.ts",
+  "types": "./index.d.ts",
   "bin": {
     "dev-smtp": "./bin/dev-smtp"
   },
